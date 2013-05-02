@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>back4</title>
+    <style>
+    div {
+        font-family: "STKaiti",楷体,楷体_GB2312!important
+    }
+
+    body {
+        background-color: #929292;
+    }
+
+    #container {
+        position: relative;
+        margin-left: auto;
+        margin-right: auto;
+        margin-top: 50px;
+        width: 750px;
+
+        perspective: 2000px;
+    }
+
+    #postcard {
+        position: absolute;
+        transform-style: preserve-3d;
+        transition:transform 1s ease-in-out;
+    }
+
+    #postcard #postcard_a {
+        position: absolute;
+        backface-visibility: hidden;
+        z-index: 13;  
+    }
+
+    #postcard #postcard_b {
+        position: absolute;
+        transform: rotateY(-180deg);
+        backface-visibility: hidden;
+        z-index: 12;
+    }
+
+    .flipped {
+        transform: rotateY( 180deg );
+    }
+
+
+    </style>
+    <script src="js/prefixfree.min.js"></script>
+    <script src="http://code.jquery.com/jquery-1.9.1.js"></script>
+    <script src="http://code.jquery.com/ui/1.10.2/jquery-ui.js"></script>
+    <script src="js/jquery.event.move.js"></script>
+    <script src="js/jquery.mousewheel.js"></script>
+    <script src="js/Postcard.js"></script>
+    <script src="js/zipcodes.js"></script>
+    <script src="js/jquery.wumz.editable.js"></script>
+    <script src="js/jquery.wumz.address.js"></script>
+    <script src="js/jquery.wumz.postcard_b.js"></script>
+    <script src="js/jquery.flip.min.js"></script>
+
+    
+    <script>
+    
+    $(document).ready(function(){
+        var ly = '{"areas":[{"h":471.0,"w":321.0,"y":724.5,"x":1300.5,"degrees":0},{"h":473.0,"w":367.0,"y":725.5,"x":925.5,"degrees":0}],"materials":[],"background":"http://pic.52mxp.com/backgrounds/4462c507e0613890277fe4491b15d7929746f917_r.png"}';
+        // var ly = '{"background":"http://pic.52mxp.com/backgrounds/57ec1c5a33f0631bb38929e783ca84a76a349da3.png","materials":[{"type":"2","src":"http://pic.52mxp.com/stickers/5c00dad67f1c90348f6b3fcbf013caafb3d471a9.png","x":247.5,"y":986,"w":279,"h":288,"degrees":0}],"areas":[{"x":416.5,"y":428.5,"w":455.3011842565203,"h":478.4629852942387,"degrees":0},{"x":666.5,"y":1060.5,"w":477.9612211023413,"h":617.5039106866924,"degrees":0}]}';
+        var postcard = new Postcard('postcard_a', ly, 1/2, 1);
+        postcard.onAreaClick(function(i, e){
+          var url = prompt('请输入图片地址:', 'http://pic.52mxp.com/site/girl.jpg');
+          if(url!=null){
+            postcard.addImage(i, url);
+          }
+        });
+
+        $("#postcard_b").postcard_b({s:1/2});
+
+        $("#btn_toggle").click(function(event){
+
+            $("#postcard").toggleClass("flipped");
+            
+        });
+
+
+    });
+    </script>
+</head>
+<body>
+    <a href="#" id="btn_toggle">toggle</a>
+    <div id="container">
+        <div id="postcard">
+            <div id="postcard_a"></div>
+            <div id="postcard_b"></div>
+        </div>
+    </div>
+    
+    
+</body>
+</html>

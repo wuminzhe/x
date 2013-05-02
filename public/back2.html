@@ -1,0 +1,373 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>back2</title>
+    <style>
+    div {
+        font-family: "STKaiti",楷体,楷体_GB2312!important
+    }
+
+    body {
+        background-color: #929292;
+    }
+
+    .back {
+        width: 750px;
+        height: 500px;
+        margin-left: auto;
+        margin-right: auto;
+        margin-top: 80px;
+        position: relative;
+    }
+
+    .back > .background {
+        width: 750px;
+        height: 500px;
+    }
+
+    /* 邮编 */
+    .back > .receiver-postcode {
+        position: absolute;
+        width: 310px;
+        height: 63px;
+        left: 53px;
+        top: 37px;
+        
+        /*background: rgba(255,0,0,0.3);*/
+        /*outline: 1px solid rgba(255,0,0,.5);*/
+    }
+    
+    .back > .receiver-postcode > [class*='c-'] {
+        position: absolute;
+        font-size: 32.5px;
+        width:34px;
+        top: 11px;
+        padding-left: 9px;
+        padding-top: 4px;
+        border:none;
+        outline: none;
+        /*background: rgba(0,0,0,0.4);*/
+
+    }
+
+    .back > .receiver-postcode > .c-1 {
+        left: 12px;
+    }
+
+    .back > .receiver-postcode > .c-2 {
+        left: 62px;
+    }
+
+    .back > .receiver-postcode > .c-3 {
+        left: 112px;
+    }
+
+    .back > .receiver-postcode > .c-4 {
+        left: 163px;
+        width:33px;
+    }
+
+    .back > .receiver-postcode > .c-5 {
+        left: 213px;
+        width:33px;
+    }
+
+    .back > .receiver-postcode > .c-6 {
+        left: 263px;
+        width:33px;
+    }
+    
+
+    /* 祝福 */
+    .back > .blessings {
+        position: absolute;
+        top: 105px;
+        left: 52px;
+        width: 320px;
+        padding: 6px;
+        font-size: 18.5px;
+        box-sizing: border-box;
+    }
+
+    .back > .sender-address {
+        position: absolute;
+        left: 412px;  
+        bottom: 106px;
+        width: 300px;
+        padding: 4px;
+        font-size: 16px;
+        box-sizing: border-box;
+    }
+
+    /* 收件人地址 */
+    .receiver-address {
+        box-sizing: border-box;
+        font-size: 16px;
+        position: absolute;
+        left: 412px;  
+        bottom: 226px;
+        width: 300px;
+        padding: 4px;
+    }
+
+    .receiver-box {
+        position: absolute;
+        left: 412px;  
+        bottom: 166px;
+        width: 300px;
+        /*outline: 1px solid #ccc;*/
+        text-align: center;
+    }
+
+    /* 收件人 */
+    .receiver {
+        box-sizing: border-box;
+        font-size: 25px;
+        padding: 4px;
+    }
+
+
+    /* 地址选择对话框 */
+    .receiver-address-selector {
+        width: 400px;
+        background-color: whitesmoke;
+        padding: 8px;
+        position: absolute;
+        left: 411px;  
+        top: 276px;
+        display: none;
+    }
+
+    .select-group-3 {
+        background: white;
+        overflow: hidden;
+        border: 3px solid #ddd;
+    }
+
+    .select-group-3 select {
+        background: transparent;
+        padding-left: 10px;
+        height: 40px;
+        line-height: 40px;
+        -webkit-appearance: none;
+        outline: none;
+        border: 0;
+        float: left;
+        width: 27%;
+    }
+
+    .select-group-3 .label {
+        /*background-color: red;*/
+        text-align: left;
+        width: 20px;
+        height: 30px;
+        line-height: 30px;
+        border-right: 1px solid #ccc;
+        float: left;
+        margin: 5px 0;
+        color: #aaa;
+    }
+
+    .select-group-3 .last {
+        border-right: 0px;
+        float: right;
+    }
+
+    .text {
+        border: 3px solid #ddd;
+        padding: 0 10px;
+        background-color: white;
+    }
+
+    .text input {
+        outline: none;
+        box-sizing: content-box;
+    }
+
+    .text input[type="text"] {
+        background: transparent;
+        border: 0;
+        padding: 0px;
+        height: 40px;
+        width: 100%;
+    }
+
+    .btn {
+      color: white;
+      height: 40px;
+      padding: 0 10px 0 10px;
+      border: 0px solid #509be2;
+      background-color: #61b6f7;
+    }
+
+    .pink {
+      border: 0px solid #e25550;
+      background-color: #f76561;
+    }
+
+    /* 地址选择对话框 结束 */
+
+    </style>
+    <script src="js/jquery-1.7.2.min.js"></script>
+    <script src="js/zipcodes.js"></script>
+    <script src="js/jquery.wumz.editable.js"></script>
+    <script>
+    
+    $(document).ready(function(){
+        $(".back > .blessings").editable({
+            limit: 140
+        });
+
+        $(".back > .sender-address").editable({
+            limit: 20,
+            counter_place: "top"
+        });
+
+        $(".receiver").editable({
+            limit: 10,
+            counter_place: "top"
+        });
+
+        $(".back").pic_b({});
+
+
+        //地址选择对话框
+        zipcode('receiver_province', 'receiver_city', 'receiver_county', 'receiver_postcode');
+
+        $('.text').focusin(function(e){
+            $(this).css('border', '3px solid #5E844F');
+        });
+
+        $('.text').focusout(function(e){
+            $(this).css('border', '3px solid #ddd');
+        });
+
+        $('.select-group-3').focusin(function(e){
+            $(this).css('border', '3px solid #5E844F');
+        });
+
+        $('.select-group-3').focusout(function(e){
+            $(this).css('border', '3px solid #ddd');
+        });
+
+        $('.btn').mousedown(function(){
+            $(this).css('background-color', '#95ccff');
+        });
+
+        $('.btn').mouseup(function(){
+            $(this).css('background-color', '#61b6f7');
+        });
+
+        $('.pink').mousedown(function(){
+            $(this).css('background-color', '#ff7975');
+        });
+
+        $('.pink').mouseup(function(){
+            $(this).css('background-color', '#f76561');
+        });
+        //地址选择对话框 结束
+
+        $(".receiver-address").mouseover(function(){
+            $(this).css({
+                'outline':'1px solid #ccc',
+                'cursor':'pointer'
+            });
+            
+        });
+
+        $(".receiver-address").mouseout(function(){
+            if($(".receiver-address-selector").css('display')=='none'){
+                $(this).css({
+                    'outline':'0px',
+                    'cursor':'default'
+                });
+            }
+            
+        });
+
+        $(".receiver-address").click(function(){
+            if($(".receiver-address-selector").css('display')=='none'){
+                $(".receiver-address-selector").slideDown();
+            }else{
+                $(".receiver-address-selector").slideUp();
+            }
+            //$(".receiver-address-selector").fadeToggle();
+        });
+
+        $('#cancel_receiver_address_select').click(function(){
+            $(".receiver-address-selector").slideUp();
+            $(".receiver-address").css({
+                'outline':'0px',
+                'cursor':'default'
+            });
+        });
+
+        $('#confirm_receiver_address_select').click(function(){
+            var receiver_province = $('#receiver_province').val();
+            var receiver_city = $('#receiver_city').val();
+            var receiver_county = $('#receiver_county').val();
+            receiver_county = receiver_county==null ? '' : receiver_county;
+            var receiver_address_detail = $('#receiver_address_detail').val();
+            $('.receiver-address').html(receiver_province+receiver_city+receiver_county+receiver_address_detail);
+
+            //
+            var receiver_postcode = $('#receiver_postcode').val();
+            for(var i=0;i<receiver_postcode.length;i++){
+                $('.c-'+(i+1)).html(receiver_postcode.charAt(i));
+            }
+
+            //
+            $(".receiver-address-selector").slideUp();
+
+            $(".receiver-address").css({
+                'outline':'0px',
+                'cursor':'default'
+            });
+        });
+    });
+    </script>
+</head>
+<body>
+    <div class="back" id="back">
+    	<img class="background" src="./img/nopost.png" alt="" />
+        <div class="receiver-postcode">
+            <div class="c-1">2</div>
+            <div class="c-2">1</div>
+            <div class="c-3">0</div>
+            <div class="c-4">0</div>
+            <div class="c-5">1</div>
+            <div class="c-6">2</div>
+        </div>
+        <div class="blessings">传说中的不打不相识很</div>
+        <div class="receiver-address">江苏无锡江阴市颐新华都37幢202室</div>
+        <div class="receiver-box"><div class="receiver">王五</div></div>
+        <div class="sender-address">江西抚州临川区东华理工大学</div>
+
+        <div class="receiver-address-selector">
+            <div class="select-group-3">
+                <select id="receiver_province">
+                </select>
+                <div class="label">省</div>
+                <select id="receiver_city">
+                </select>
+                <div class="label">市</div>
+                <select id="receiver_county">
+                </select>
+                <div class="label last">区</div>
+            </div>
+            
+            <div class="text" style="margin-top:6px;display:none">
+                <input type="text" placeholder="邮政编码" id="receiver_postcode">
+            </div>
+
+            <div class="text" style="margin-top:6px;margin-bottom:8px">
+                <input type="text" placeholder="地址" id="receiver_address_detail">
+            </div>
+
+            <input id="confirm_receiver_address_select" type="button" value="确定" class="btn" style="width:120px">
+            <input id="cancel_receiver_address_select" type="button" value="取消" class="btn pink" style="width:80px">
+        </div>
+    </div>
+</body>
+</html>

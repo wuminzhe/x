@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>back3</title>
+    <link rel="stylesheet" href="http://code.jquery.com/ui/1.10.2/themes/smoothness/jquery-ui.css">
+    <style>
+    div {
+        font-family: "STKaiti",楷体,楷体_GB2312!important
+    }
+
+    body {
+        background-color: #929292;
+    }
+
+    #container {
+        margin-left: auto;
+        margin-right: auto;
+        margin-top: 90px;
+        width: 750px;
+    }
+
+    #postcard_a {
+      -webkit-transition: -webkit-transform .5s ease-in-out;
+      -o-transition: -webkit-transform .5s ease-in-out;
+      -moz-transition: -webkit-transform .5s ease-in-out;
+      transition: -webkit-transform .5s ease-in-out;
+    }
+
+    </style>
+    <script src="http://code.jquery.com/jquery-1.9.1.js"></script>
+    <script src="http://code.jquery.com/ui/1.10.2/jquery-ui.js"></script>
+    <script src="js/jquery.event.move.js"></script>
+    <script src="js/Postcard.js"></script>
+    <script src="js/zipcodes.js"></script>
+    <script src="js/jquery.wumz.editable.js"></script>
+    <script src="js/jquery.wumz.address.js"></script>
+    <script src="js/jquery.wumz.postcard_b.js"></script>
+    <script src="js/jquery.flip.min.js"></script>
+
+    
+    <script>
+    
+    $(document).ready(function(){
+        var ly = '{"areas":[{"h":471.0,"w":321.0,"y":724.5,"x":1300.5,"degrees":0},{"h":473.0,"w":367.0,"y":725.5,"x":925.5,"degrees":0}],"materials":[],"background":"http://pic.52mxp.com/backgrounds/4462c507e0613890277fe4491b15d7929746f917_r.png"}';
+
+        var postcard = new Postcard('postcard_a', ly, 1/2, 1);
+        postcard.onAreaClick(function(i, e){
+          var url = prompt('请输入图片地址:', 'http://pic.52mxp.com/site/girl.jpg');
+          if(url!=null){
+            postcard.addImage(i, url);
+          }
+        });
+
+        $("#postcard_b").postcard_b({s:1/2});
+
+        $("#show_b").click(function(){
+            $("#postcard_a").css({
+                // '-webkit-transform': 'rotate(60deg)',
+                '-webkit-transform': 'translate(750px, -200px)'
+            });
+
+            setTimeout(set_postcard_b_front, 500);
+        });
+
+        var set_postcard_b_front = function(){
+            $("#postcard_b").css({'z-index':'10'});
+            $("#postcard_a").css({'-webkit-transform': 'rotate(0deg)'});
+
+        };
+
+        // $("#show_b").click(function(){
+        //     $("#postcard_a").hide('blind');
+        //     $("#postcard_b").show('blind');
+            
+        // });
+
+        // $("#show_a").click(function(){
+        //     $("#postcard_b").hide('blind');
+        //     $("#postcard_a").show('blind');
+        // });
+
+    });
+    </script>
+</head>
+<body>
+    <a href="#" id="show_b">背面</a>
+    <!-- <a href="#" id="show_a">正面</a> -->
+    <div id="container" style="position:relative;">
+        
+        <div id="postcard_b"></div>
+        <div id="postcard_a" style="position:absolute;top:0;"></div>
+    </div>
+    
+</body>
+</html>

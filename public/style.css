@@ -1,0 +1,134 @@
+html, body {
+    padding: 0;
+    margin: 0;
+    height: 100%;
+    font: 13px 'Courier New';
+
+}
+
+body{
+    background-color: whitesmoke;
+}
+
+#container {
+    height: 100%;
+    position: relative;
+}
+
+#sidebar {
+    width: 220px;
+    height: 100%;
+    background-color: #F4F4F4;
+
+    position: absolute;
+    top:0;
+    left:0;
+}
+
+
+
+#content {
+    height: 100%;
+    margin-left: 220px;
+    /*background: url(./img/bg2.png);*/
+    background-color: #929292;
+    position: relative;
+}
+
+
+
+#postcard_container {
+    margin-left:auto; margin-right: auto;
+}
+
+#log {
+    position: absolute;
+    height: 150px;
+    width: 100%;
+    background-color: rgba(0,0,0,.4);
+    color: white;
+    font-size: 9px;
+    bottom: 0;
+    overflow: auto;
+}
+
+#logcontent {
+    margin: 5px;
+    white-space: pre;
+}
+
+
+#sidebar > .suites {
+    overflow: auto;
+    /*outline: 1px dashed red;*/
+}
+
+#sidebar > #search {
+    border-bottom: solid 1px #ccc;
+}
+
+#sidebar > #search > input{
+    -webkit-appearance: textfield;
+    outline: none;
+    width: 208px;
+    border: solid 1px #ccc;
+    padding: 2px 0 2px;
+    font-size: 14px;
+    margin: 3px 6px 3px;
+    border-radius: 15px;
+}
+
+.suite {
+    clear: both;
+}
+
+.suite > .title {
+    font-size: 16px;
+    text-decoration: none;
+    color: #1E1E1E;
+    overflow: hidden;
+}
+
+.suite > .title > .icon {
+    height: 30px;
+    line-height: 33px;
+    width: 15px;
+    float: left;
+    margin-left: 10px;
+    /*background-color: pink;*/
+}
+
+.suite > .title > .text {
+    float: left;
+    height: 30px;
+    line-height: 33px;
+    /*background-color: pink;*/
+}
+
+.suite > .templates {
+    clear: both;
+    display: none;
+}
+
+.suite > .templates > .template {
+    text-align: center;
+    padding-top: 10px;
+    display: block;
+    text-decoration: none;
+}
+
+.suite > .templates > .first {
+    padding-top: 5px;
+}
+
+.suite > .templates > .template > img {
+    /*border: 1px solid lightgray;*/
+    box-shadow: 1px 1px 5px 0 grey;
+    width: 180px;
+}
+
+.suite > .templates > .template > .name {
+    padding-top: 8px;
+    color: #1E1E1E;
+    font-size: 14px;
+}

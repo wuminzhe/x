@@ -1,0 +1,333 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title></title>
+  <meta http-equiv="Content-Type" content="text/html;charset=UTF-8">
+  <link rel="stylesheet" href="http://fortawesome.github.com/Font-Awesome/assets/css/font-awesome.css">
+  <script src="js/jquery-1.7.2.min.js"></script>
+  <script src="js/jquery.event.move.js"></script>
+  <script src="js/Postcard.js"></script>
+  <script src="js/zipcodes.js"></script>
+  <script src="js/jquery.wumz.editable.js"></script>
+  <script src="js/jquery.wumz.address.js"></script>
+  <script src="js/jquery.wumz.postcard_b.js"></script>
+  <link rel="stylesheet" href="./style.css">
+  <script>
+    function build(suites){
+      window.current = null;
+
+      var interval = null;
+
+      for(var i=0;i<suites.length;i++){
+        var suite = suites[i];
+
+        var suite_dom =
+            '<div class="suite" id="suite_'+suite['id']+'">'+
+                '<a class="title" href="###">'+
+                '<div class="icon"><i class="icon-caret-right"></i></div>'+
+                '<div class="text"><span>'+suite['name']+'</span></div>'+
+                '</a>'+
+
+                '<div class="templates"></div>'+
+                '</div>';
+
+        $('.suites').append(suite_dom);
+
+        for(var j=0;j<suite['templates'].length;j++){
+          var template = suite['templates'][j];
+          var template_dom =
+            '<a href="###" id="tpl_'+template['id']+'" class="template" orientation="'+template['orientation']+'" ly=\''+template['ly']+'\'>' +
+              '<img src="'+template['preview']+'">' +
+              '<div class="name"><span>'+template['name']+'</span></div>'+
+            '</a>';
+
+          $('#suite_'+suite['id']).find('.templates').append(template_dom);
+          var $template = $('#tpl_'+template['id']);
+          if(j==0){//第一个
+            $template.addClass('first');
+          }
+
+          if(template['orientation']==0){
+            $template.children('img').css('width', '120px');
+          }
+          //
+          $template.click(function(){
+            // $('#postcard').empty();
+            var id = $(this).attr('id');
+            var orientation = parseInt($(this).attr('orientation'));
+            var ly = decodeURI($(this).attr('ly'));
+
+            //定位
+            var top = 60;
+            if(orientation==1){//水平
+              var s = ($('#content').height() - top*2) / 1000;
+              var left = ($('#content').width()-1500*s) / 2;
+            }else{//垂直
+              var s = ($('#content').height() - top*2) / 1500;
+              var left = ($('#content').width()-1000*s) / 2;
+            }
+            $('#postcard_container').css('padding',top+'px 0 0 '+left+'px');
+
+            //生成
+            // var postcard = new Postcard('postcard', ly, s, orientation);
+            // postcard.onAreaClick(function(i, e){
+            //   var url = prompt('请输入图片地址:', 'http://pic.52mxp.com/site/girl.jpg');
+            //   if(url!=null){
+            //     postcard.addImage(i, url);
+            //   }
+            // });
+
+            $("#postcard_b").postcard_b({
+              s: s
+            });
+
+            //刷新输出
+            // current = postcard;
+            // if(interval!=null){
+            //   clearInterval(interval);
+            // }
+            // interval = setInterval("$('#logcontent').html(window.current.toJson());", 1000);
+          });
+        }
+      }
+
+      $('.suite > .title').click(function(){
+        var $templates = $(this).parent().find('.templates');
+        if($(this).find('i').attr('class')=='icon-caret-down'){
+          $(this).find('i').attr('class', 'icon-caret-right');
+          $templates.slideUp();
+        }else{
+          $(this).find('i').attr('class', 'icon-caret-down');
+          $templates.slideDown();
+        }
+      });
+    }
+
+    String.prototype.trim= function(){
+      // 用正则表达式将前后空格
+      // 用空字符串替代。
+      return this.replace(/(^\s*)|(\s*$)/g, "");
+    }
+
+    $(document).ready(function(){
+      $('.suites').height($('#sidebar').height()-$('#search').height()-2);
+//      $.ajax({
+////        url: 'http://api.52mxp.com/v2/suites_all',
+//        url: 'http://localhost:3000/v2/suites_all',
+//        dataType: "jsonp",
+//        success: function(data) {
+////          $('#content').html(data);
+//          //alert(decodeURI(data));
+//          var suites = eval('('+data+')');
+////          var suites = JSON.parse(data);
+//
+//          for(var i=0;i<suites.length;i++){
+//            var suite = suites[i];
+//            //
+//            $.each(suite['templates'],function(j, template){
+//              if(template['orientation']==1){//水平
+//                template['preview'] = template['preview_h'];
+//                if(template['ly_h']){
+//                  template['ly'] = template['ly_h'];
+//                }
+//              }else{
+//                template['preview'] = template['preview_v'];
+//              }
+//            })
+//          }
+//
+//          //alert(suites);
+//
+//          build(suites);
+//        }
+//      });
+      // var suites = [];
+      // for(var i=1;i<=50;i++){
+      //   suites.push({
+      //     'id':i,
+      //     'name':'另一种色彩',
+      //     'templates':[
+      //       {
+      //         'id': i,
+      //         'preview': 'http://pic.52mxp.com/previews/a98477713c57efd9c03c4c77eb2efe3abf23e702.jpg!280x',
+      //         'ly': '{"areas":[{"h":471.0,"w":321.0,"y":724.5,"x":1300.5,"degrees":0},{"h":473.0,"w":367.0,"y":725.5,"x":925.5,"degrees":0}],"materials":[],"background":"http://pic.52mxp.com/backgrounds/4462c507e0613890277fe4491b15d7929746f917_r.png"}',
+      //         'orientation': 1,
+      //         'name': '色彩1'
+      //       },
+      //       {
+      //         'id': i*2,
+      //         'preview': './img/v.jpg',
+      //         'ly': '{"background":"http://pic.52mxp.com/backgrounds/57ec1c5a33f0631bb38929e783ca84a76a349da3.png","materials":[{"type":"2","src":"http://pic.52mxp.com/stickers/5c00dad67f1c90348f6b3fcbf013caafb3d471a9.png","x":247.5,"y":986,"w":279,"h":288,"degrees":0}],"areas":[{"x":416.5,"y":428.5,"w":455.3011842565203,"h":478.4629852942387,"degrees":0},{"x":666.5,"y":1060.5,"w":477.9612211023413,"h":617.5039106866924,"degrees":0}]}',
+      //         'orientation': 0,
+      //         'name': '色彩1'
+      //       },
+      //       {
+      //         'id': i*3,
+      //         'preview': 'http://pic.52mxp.com/previews/a98477713c57efd9c03c4c77eb2efe3abf23e702.jpg!280x',
+      //         'ly': '{"areas":[{"h":471.0,"w":321.0,"y":724.5,"x":1300.5,"degrees":0},{"h":473.0,"w":367.0,"y":725.5,"x":925.5,"degrees":0}],"materials":[],"background":"http://pic.52mxp.com/backgrounds/4462c507e0613890277fe4491b15d7929746f917_r.png"}',
+      //         'orientation': 1,
+      //         'name': '色彩1'
+      //       }
+      //     ]
+      //   });
+      // }
+     var suites = [
+       {
+         'id':1,
+         'name':'另一种色彩',
+         'templates':[
+           {
+             'id': 1,
+             'preview': 'http://pic.52mxp.com/previews/a98477713c57efd9c03c4c77eb2efe3abf23e702.jpg!280x',
+             'ly': '{"areas":[{"h":471.0,"w":321.0,"y":724.5,"x":1300.5,"degrees":0},{"h":473.0,"w":367.0,"y":725.5,"x":925.5,"degrees":0}],"materials":[],"background":"http://pic.52mxp.com/backgrounds/4462c507e0613890277fe4491b15d7929746f917_r.png"}',
+             'orientation': 1,
+             'name': '色彩1'
+           },
+           {
+             'id': 2,
+             'preview': './img/v.jpg',
+             'ly': '{"background":"http://pic.52mxp.com/backgrounds/57ec1c5a33f0631bb38929e783ca84a76a349da3.png","materials":[{"type":"2","src":"http://pic.52mxp.com/stickers/5c00dad67f1c90348f6b3fcbf013caafb3d471a9.png","x":247.5,"y":986,"w":279,"h":288,"degrees":0}],"areas":[{"x":416.5,"y":428.5,"w":455.3011842565203,"h":478.4629852942387,"degrees":0},{"x":666.5,"y":1060.5,"w":477.9612211023413,"h":617.5039106866924,"degrees":0}]}',
+             'orientation': 0,
+             'name': '色彩1'
+           },
+           {
+             'id': 3,
+             'preview': 'http://pic.52mxp.com/previews/a98477713c57efd9c03c4c77eb2efe3abf23e702.jpg!280x',
+             'ly': '{"areas":[{"h":471.0,"w":321.0,"y":724.5,"x":1300.5,"degrees":0},{"h":473.0,"w":367.0,"y":725.5,"x":925.5,"degrees":0}],"materials":[],"background":"http://pic.52mxp.com/backgrounds/4462c507e0613890277fe4491b15d7929746f917_r.png"}',
+             'orientation': 1,
+             'name': '色彩1'
+           }
+         ]
+       },
+       {
+         'id':2,
+         'name':'狗屎',
+         'templates':[
+           {
+             'id': 4,
+             'preview': 'http://pic.52mxp.com/previews/a98477713c57efd9c03c4c77eb2efe3abf23e702.jpg!280x',
+             'ly': '{"areas":[{"h":471.0,"w":321.0,"y":724.5,"x":1300.5,"degrees":0},{"h":473.0,"w":367.0,"y":725.5,"x":925.5,"degrees":0}],"materials":[],"background":"http://pic.52mxp.com/backgrounds/4462c507e0613890277fe4491b15d7929746f917_r.png"}',
+             'orientation': 1,
+             'name': '色彩1'
+           },
+           {
+             'id': 5,
+             'preview': './img/v.jpg',
+             'ly': '{"background":"http://pic.52mxp.com/backgrounds/57ec1c5a33f0631bb38929e783ca84a76a349da3.png","materials":[{"type":"2","src":"http://pic.52mxp.com/stickers/5c00dad67f1c90348f6b3fcbf013caafb3d471a9.png","x":247.5,"y":986,"w":279,"h":288,"degrees":0}],"areas":[{"x":416.5,"y":428.5,"w":455.3011842565203,"h":478.4629852942387,"degrees":0},{"x":666.5,"y":1060.5,"w":477.9612211023413,"h":617.5039106866924,"degrees":0}]}',
+             'orientation': 0,
+             'name': '色彩1'
+           },
+           {
+             'id': 6,
+             'preview': 'http://pic.52mxp.com/previews/a98477713c57efd9c03c4c77eb2efe3abf23e702.jpg!280x',
+             'ly': '{"areas":[{"h":471.0,"w":321.0,"y":724.5,"x":1300.5,"degrees":0},{"h":473.0,"w":367.0,"y":725.5,"x":925.5,"degrees":0}],"materials":[],"background":"http://pic.52mxp.com/backgrounds/4462c507e0613890277fe4491b15d7929746f917_r.png"}',
+             'orientation': 1,
+             'name': '色彩1'
+           }
+         ]
+       }
+     ];
+
+      build(suites);
+
+
+      $('#sidebar > #search > input').keyup(function(){
+        var val = $(this).val();
+        search(val);
+      });
+
+      $('#sidebar > #search > input').click(function(){
+        var val = $(this).val();
+        search(val);
+      });
+
+
+
+    });
+
+    function search(val){
+      val = val.trim();
+      if(val.length>0){
+        do_search(val);
+      }else{
+        $('.suite').show();
+        $('.suite > .title > .text > span').css('background-color', 'transparent');
+        $('.suite > .templates > .template > .name > span').css('background-color', 'transparent');
+
+      }
+    }
+
+    function do_search(val){
+      var $titles = $('.suite > .title > .text');
+      var $template_names = $('.suite > .templates > .template > .name');
+
+      $('.suite').hide();
+
+      $titles.each(function(i){
+        var title = $(this).html();
+        if(title.indexOf(val)!=-1){
+          $(this).children('span').css('background-color', 'yellow');
+          $(this).parents('.suite').show();
+
+        }
+      });
+
+      $template_names.each(function(i){
+        var name = $(this).html();
+        if(name.indexOf(val)!=-1){
+          $(this).children('span').css('background-color', 'yellow');
+          $(this).parents('.suite').show();
+        }
+      });
+
+
+    }
+
+
+  </script>
+</head>
+<body>
+  <!--<button id="tojson">获取结果</button>-->
+  <div id="container">
+
+    <div id="content">
+      <div id="postcard_container">
+        <div id="postcard"></div>
+        <div id="postcard_b"></div>
+      </div>
+      <div id="log">
+        <div id="logcontent">
+
+        </div>
+      </div>
+    </div>
+
+    <div id="sidebar">
+
+      <div id="search">
+        <input type="search" name="" id="">
+      </div>
+      <div class="suites">
+
+        <!--<div class="suite">-->
+
+        <!--<a class="title" href="###">-->
+        <!--<div class="icon"><i class="icon-caret-down"></i></div>-->
+        <!--<div class="text">另一种色彩</div>-->
+        <!--</a>-->
+
+        <!--<div class="templates"></div>-->
+
+        <!--</div>-->
+
+      </div>
+
+
+    </div>
+
+  </div>
+
+
+
+</body>
+</html>

@@ -1,0 +1,66 @@
+.select-box {
+  position: absolute;
+  width: 20px;
+  height: 20px;
+  top: 0px;
+  left: 0px;
+  display: none;
+  background-color: rgba(66,194,217,0.1);
+  border: 1px dashed rgba(0,0,0,0.25);
+  z-index: 1000;
+}
+
+.paper {
+  background: url(http://pic.52mxp.com/site/tool/grid.png);
+  position: relative;
+  border: 1px solid #ccc;
+  overflow: hidden;
+}
+
+.paper .ui-selecting { 
+  background-color:rgba(66,194,217,0.3)!important 
+}
+
+.paper .ui-selected { 
+  background-image: url(../images/line-h-sel.png), url(../images/line-h-sel.png), url(../images/line-v-sel.png), url(../images/line-v-sel.png);
+}
+
+.bordered {
+  background: url(../images/line-h.png) top repeat-x,url(../images/line-h.png) bottom repeat-x,url(../images/line-v.png) left repeat-y,url(../images/line-v.png) right repeat-y;
+}
+
+.block {
+  position: absolute;
+}
+
+.block .content {
+  width: 100%;
+  height: 100%;
+  overflow: hidden;
+  text-align: center;
+}
+
+.rectangle {
+  @extend .block
+  background-color: white;
+}
+
+.button {
+  background-color: white;
+
+  font-size: 1em;
+  line-height: 1em;
+  padding: 0;
+  color: inherit;
+  float: none;
+  box-shadow: 3px 3px 0 rgba(0,0,0,0.5)!important;
+}
+
+.placeholder {
+  background-color: #f8f8f8;
+}
+
+.placeholder .content img {
+  width: 100%;
+  height: 100%;
+}

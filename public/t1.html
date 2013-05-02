@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="UTF-8">
+  <title>t1</title>
+  <script src="http://code.jquery.com/jquery-1.9.1.js"></script>
+  <script>
+
+   
+  
+  </script>
+</head>
+<body>
+  <video id="video" autoplay=""></video>  
+  <script>  
+    navigator.getUserMedia = navigator.webkitGetUserMedia || navigator.getUserMedia;
+   
+    window.URL = window.URL || window.webkitURL;
+   
+    navigator.getUserMedia({audio: true, video: true}, function(stream) {
+      var video = document.querySelector('video');
+      video.src = window.URL.createObjectURL(stream);
+    }, function(e) {
+      console.log(e);
+    });
+  </script>  
+  <script>  
+    var video = document.querySelector('video');
+    var canvas = document.createElement('canvas');  
+
+    var ctx = canvas.getContext('2d');  
+    var cw = vw;
+    var ch = vh;
+    ctx.fillStyle = "#ffffff";  
+    ctx.fillRect(0, 0, cw, ch);  
+    ctx.drawImage(video, 0, 0, vvw,vvh, 0,0, vw,vh);  
+    document.body.append(canvas);  
+  </script>  
+</body>
+</html>

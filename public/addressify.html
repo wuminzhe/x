@@ -1,0 +1,30 @@
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>test</title>
+    <style>
+    .hello {
+        
+    }
+    input, select {
+        border: none;
+        outline: none;
+    }
+
+    </style>
+    <script src="js/jquery-1.7.2.min.js"></script>
+    <script src="js/jquery.wumz.addressify.js"></script>
+    <script>
+    
+    $(document).ready(function(){
+        $(".hello").addressify({
+            show_postcode: true
+        });
+    });
+    </script>
+</head>
+<body>
+   <div class="hello"></div>
+   <div class="hello"></div>
+</body>
+</html>
