@@ -84,7 +84,6 @@ function SelectBox(domId){
       _this.setHandlesPosition(w1, h1);
       //
       _this.target.resize(_this.x0, _this.y0, _this.w0, _this.h0, x1, y1, w1, h1);
-      _this.target.update();
     },
     start: function( event, ui ) {
       var $el = $(event.target);
@@ -108,7 +107,6 @@ function SelectBox(domId){
       var dx = ui.position.left - _this.originalPosition.left;
       var dy = ui.position.top - _this.originalPosition.top;
       _this.target.moveFromSnapshot(dx, dy);
-      _this.target.update();
     },
     start: function( event, ui ) {
       $t = $(event.target); 
@@ -158,7 +156,6 @@ SelectBox.prototype.stickTo = function(target){
   this.target = target;
   //将目标的位置大小 赋给 selectbox
   var bound = this.target.getBound();
-  
   if(bound!=null) {
     this.setPosition(bound.left, bound.top);
     this.setSize(bound.width, bound.height);

@@ -1,0 +1,120 @@
+* {
+  margin: 0;
+  padding: 0;
+  border: 0;
+  font-size: 100%;
+  font: inherit;
+  vertical-align: baseline;
+}
+
+body {
+  background: #fff;
+  color: #555;
+  font-family: 'Helvetica Neue',Arial,Helvetica,sans-serif;
+  font-size: 15px;
+}
+
+.select-box {
+  position: absolute;
+  width: 20px;
+  height: 20px;
+  top: 0px;
+  left: 0px;
+  display: none;
+  background-color: rgba(66,194,217,0.1);
+  border: 1px dashed rgba(0,0,0,0.25);
+  z-index: 1000;
+}
+
+.select-box:hover {
+  cursor: move;
+}
+
+.paper {
+  background: url(http://pic.52mxp.com/site/tool/grid.png);
+  position: relative;
+  border: 1px solid #ccc;
+  overflow: hidden;
+}
+
+.paper .ui-selecting { 
+  background-color:rgba(66,194,217,0.3)!important 
+}
+
+.paper .ui-selected { 
+  box-shadow: 0 0 5px rgba(66,194,217,1);
+  cursor: move;
+}
+
+.border-solid {
+  background: url(../images/line-h.png) top repeat-x,url(../images/line-h.png) bottom repeat-x,url(../images/line-v.png) left repeat-y,url(../images/line-v.png) right repeat-y;
+}
+
+.border-dashed {
+  background: url(../images/line-h-dashed.png) top repeat-x,url(../images/line-h-dashed.png) bottom repeat-x,url(../images/line-v-dashed.png) left repeat-y,url(../images/line-v-dashed.png) right repeat-y;
+}
+
+.border-dotted {
+  background: url(../images/line-h-dotted.png) top repeat-x,url(../images/line-h-dotted.png) bottom repeat-x,url(../images/line-v-dotted.png) left repeat-y,url(../images/line-v-dotted.png) right repeat-y;
+}
+
+.block {
+  position: absolute;
+}
+
+.block:hover {
+  box-shadow: 0 0 5px rgba(66,194,217,0.5);
+}
+
+.block .content {
+  width: 100%;
+  height: 100%;
+  overflow: hidden;
+}
+
+.block .content * {
+  line-height: 1.3em;
+}
+
+.rectangle {
+  @extend .block;
+  background-color: white;
+}
+
+.button {
+  @extend .rectangle;
+
+  font-size: 1em;
+  line-height: 1.2em;
+  color: inherit;
+  float: none;
+  box-shadow: 3px 3px 0 rgba(0,0,0,0.5)!important;
+}
+
+.button .label {
+  position: absolute;
+  top: 50%;
+  width: 100%;
+  overflow: hidden;
+  margin-top: -0.60em;
+  font-size: 1em;
+  padding: 0;
+  background-color: transparent;
+  color: inherit;
+  float: none;
+  text-align: center;
+}
+
+.placeholder {
+  @extend .rectangle;
+  background-color: #f8f8f8;
+}
+
+.placeholder .content img {
+  width: 100%;
+  height: 100%;
+}
+
+.text .content {
+  word-wrap: break-word;
+}

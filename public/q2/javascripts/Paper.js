@@ -22,7 +22,6 @@ function Paper(domId){
       }
     },
     stop: function( event, ui ) {
-
       _this._stick();
     }
   });
@@ -52,7 +51,6 @@ function Paper(domId){
     if(e.which == 37){
       //
       _this.selectedBlocks.move(-10, 0);
-      _this.selectedBlocks.update();
       //
       _this.selectBox.move(-10, 0);
     }
@@ -60,7 +58,6 @@ function Paper(domId){
     if(e.which == 38){
       //
       _this.selectedBlocks.move(0, -10);
-      _this.selectedBlocks.update();
       //
       _this.selectBox.move(0, -10);
     }
@@ -68,7 +65,6 @@ function Paper(domId){
     if(e.which == 39){
       //
       _this.selectedBlocks.move(10, 0);
-      _this.selectedBlocks.update();
       //
       _this.selectBox.move(10, 0);
     }
@@ -76,7 +72,6 @@ function Paper(domId){
     if(e.which == 40){
       //
       _this.selectedBlocks.move(0, 10);
-      _this.selectedBlocks.update();
       //
       _this.selectBox.move(0, 10);
     }
@@ -148,17 +143,10 @@ Paper.prototype.selectOneBlockOnly = function(block){
 };
 
 Paper.prototype.pasteSelectedBlocks = function() {
-  
   var newBlocks = [];
   for(var i=0;i<this.blocksCopyed.length;i++){
-    var blockCopyed = this.blocksCopyed[i];
-    var newBlock = blockCopyed.clone();
-    //
-    var bound = this.getDuplicateBound( newBlock.type, newBlock.getBound() );
-    newBlock.setSize(bound.width, bound.height);
-    newBlock.setPosition(bound.left, bound.top);
-    newBlock.render();
-    //
+    var block = this.blocksCopyed[i];
+    var newBlock = block.duplicate();
     this.blocks.push(newBlock);
     newBlocks.push(newBlock);
   }
@@ -173,7 +161,9 @@ Paper.prototype.copySelectedBlocks = function() {
   this.blocksCopyed = [];
   for(var i=0;i<this.selectedBlocks.blocks.length;i++){
     var block = this.selectedBlocks.blocks[i];
-    this.blocksCopyed.push(block.clone());
+    var bound = block.getBound();
+
+    this.blocksCopyed.push(block);
   }
 };
 
@@ -188,71 +178,51 @@ Paper.prototype._setBlocksSelectedStyle = function(){
   }
 };
 
-Paper.prototype.getDuplicateBound = function(type, bound) {
-  var newBound = {left: bound.left+10, top: bound.top+10, width: bound.width, height: bound.height};
-  var rects = this.getBlocksByBound(newBound.left, newBound.top, newBound.width, newBound.height, type);
-  if(rects.length>0){
-    return this.getDuplicateBound(type, newBound);
-  }else{
-    return newBound;
-  }
-};
 
-Paper.prototype.getBlockId = function() {
-  return "b_"+this.last_block_id++;
-};
 
 //
-Paper.prototype.addBlock = function(className, x, y, width, height){
-  var block = eval("new "+className+"(this, x, y, width, height)");
-  block.render();
+Paper.prototype._addBlock = function(className, x, y, width, height){
+  var block_id = "b"+(this.last_block_id++);
+
+  this.el.append('<div id="'+block_id+'" />');
+
+  var block = eval("new "+className+"(block_id, this)");
+  block.setPosition(x, y);
+  block.setSize(width, height);
   this.blocks.push(block);
   return block;
 };
 
 Paper.prototype.addRectangle = function(x, y, width, height){
-  var rect = new Rectangle(this, x, y, width, height);
-  rect.render();
-  this.blocks.push(rect);
-  return rect;
+  return this._addBlock("Rectangle", x, y, width, height);
 };
 
 Paper.prototype.addButton = function(x, y, width, height){
-  var btn = new Button(this, x, y, width, height);
-  btn.render();
-  this.blocks.push(btn);
-  return btn;
+  return this._addBlock("Button", x, y, width, height);
 };
 
 Paper.prototype.addPlaceholder = function(x, y, width, height){
-  var b = new Placeholder(this, x, y, width, height);
-  b.render();
-  this.blocks.push(b);
-  return b;
+  return this._addBlock("Placeholder", x, y, width, height);
 };
 
 Paper.prototype.addText = function(x, y, width, height){
-  var b = new Text(this, x, y, width, height);
-  b.render();
-  this.blocks.push(b);
-  return b;
-  
+  return this._addBlock("Text", x, y, width, height);
 };
 
 //
-Paper.prototype.getBlocksByBound = function(x, y, width, height, type){
+Paper.prototype.getBlocksByBound = function(x, y, width, height, className){
   var result = [];
   
   for(var i=0;i<this.blocks.length;i++){
     var block = this.blocks[i];
     var bound = block.getBound();
     if(bound.left == x && bound.top == y && bound.width == width && bound.height == height){
-      if(type){
-        if(block.type == type){
-          result.push(block);
+      if(className){
+        if(isType(block, className)){
+          result.push(bound);
         }
       }else{
-        result.push(block);
+        result.push(bound);
       }
       
     }

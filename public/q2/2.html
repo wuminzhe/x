@@ -1,0 +1,552 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="UTF-8">
+  <title>just my cock</title>
+  
+  <link rel="stylesheet" href="http://lib.sinaapp.com/js/jquery-ui/1.10.2/themes/smoothness/jquery-ui.min.css">
+  
+  <style>
+    html, body {
+      padding: 0;
+      margin: 0;
+      height: 100%;
+    }
+
+    #container {
+      height: 100%;
+      box-sizing: border-box;
+    }
+
+    .select-box {
+      position: absolute;
+      width: 20px;
+      height: 20px;
+      top: 0px;
+      left: 0px;
+      display: none;
+      background-color: rgba(66,194,217,0.1);
+      border: 1px dashed rgba(0,0,0,0.25);
+      z-index: 1000;
+    }
+
+    #container .ui-selecting { 
+      background-color:rgba(66,194,217,0.3)!important 
+    }
+    #container .ui-selected { 
+      background-image: url(../img/line-h-sel.png), url(../img/line-h-sel.png), url(../img/line-v-sel.png), url(../img/line-v-sel.png);
+    }
+
+    .bordered {
+      background: url(../img/line-h.png) top repeat-x,url(../img/line-h.png) bottom repeat-x,url(../img/line-v.png) left repeat-y,url(../img/line-v.png) right repeat-y;
+    }
+
+
+    .block {
+      position: absolute;
+      left: 100px;
+      top: 200px;
+      width: 100px;
+      height: 60px;
+    }
+
+    .block .content {
+      width: 100%;
+      height: 100%;
+      overflow: hidden;
+      text-align: center;
+    }
+
+    .rectangle {
+      background-color: white;
+    }
+
+    .button {
+      background-color: white;
+
+      font-size: 1em;
+      line-height: 1em;
+      padding: 0;
+      color: inherit;
+      float: none;
+      box-shadow: 3px 3px 0 rgba(0,0,0,0.5)!important;
+    }
+
+    .placeholder {
+      background-color: #f8f8f8;
+    }
+
+    .placeholder .content img {
+      width: 100%;
+      height: 100%;
+    }
+
+
+  </style>
+  <script src="http://lib.sinaapp.com/js/jquery/1.9.1/jquery-1.9.1.min.js"></script>
+  <script src="http://lib.sinaapp.com/js/jquery-ui/1.10.2/jquery-ui.min.js" type="text/javascript"></script>
+  <script src="../js/tool.js" type="text/javascript"></script>
+
+  <script src="../js/underscore.js" type="text/javascript"></script>
+  <script src="../js/backbone.js" type="text/javascript"></script>
+  <script>
+  $(document).ready(function(){
+
+    var Paper = function(domId){
+      this.el = $("#"+domId);
+      this.el.css({
+        "background":"url(http://pic.52mxp.com/site/tool/grid.png)",
+        "position": "relative",
+        "border": "1px solid #ccc",
+        "overflow": "hidden"
+      });
+      var _this = this;
+      //
+      this.el.selectable({
+        tolerance: "fit",
+        filter: ".block",
+        cancel: ".block",
+        start: function( event, ui ) {
+          _this.selectedBlocks.clear();
+        },
+        selected: function( event, ui ) {
+
+          //TODO: 放入hash，直接取，可增加性能
+          for (var i = 0; i < _this.blocks.length; i++) {
+            var block = _this.blocks[i];
+
+            if(block.el.attr("id") == $(ui.selected).attr('id')){
+              _this.selectedBlocks.addBlock(block);
+            }
+          }
+        },
+        stop: function( event, ui ) {
+          _this.selectBox.stickTo(_this.selectedBlocks);
+        }
+      });
+      //
+      this.last_block_id = 0;
+      //
+      this.blocks = [];
+      this.selectedBlocks = new BlockGroup();
+      //
+      this.el.append('<div id="select_box" />');
+      this.selectBox = new SelectBox("select_box");
+
+    };
+
+    Paper.prototype.select = function(){
+      this.selectBox.stickTo(this.selectedBlocks);
+    };
+
+    Paper.prototype.addRectangle = function(x, y, width, height){
+      var block_id = "b"+(this.last_block_id++);
+
+      this.el.append('<div id="'+block_id+'" />');
+
+      var block = new Rectangle(block_id, this);
+      block.setPosition(x, y);
+      block.setSize(width, height);
+      block.snapshot();
+      this.blocks.push(block);
+      return block;
+    };
+
+    Paper.prototype.addButton = function(x, y, width, height){
+      var block_id = "btn"+(this.last_block_id++);
+
+      this.el.append('<div id="'+block_id+'" />');
+
+      var button = new Button(block_id, this);
+      button.setPosition(x, y);
+      button.setSize(width, height);
+      button.snapshot();
+      this.blocks.push(button);
+      return button;
+    };
+
+    Paper.prototype.addPlaceholder = function(x, y, width, height){
+      var block_id = "b"+(this.last_block_id++);
+
+      this.el.append('<div id="'+block_id+'" />');
+
+      var block = new Placeholder(block_id, this);
+      block.setPosition(x, y);
+      block.setSize(width, height);
+      block.snapshot();
+      this.blocks.push(block);
+      return block;
+    };
+
+    var BlockGroup = function(){
+      this.blocks = [];
+
+    }
+
+    BlockGroup.prototype.addBlock = function(block){
+      this.blocks.push(block);
+    };
+
+    BlockGroup.prototype.removeBlock = function(block){
+      this.blocks = _.without(this.blocks, block);
+    };
+
+    BlockGroup.prototype.clear = function() {
+      this.blocks = [];
+    };
+
+    BlockGroup.prototype.getBound = function() {
+      if(this.blocks.length>0) {
+        var minLeft = 10000;
+        var minTop = 10000;
+        var maxRight = 0;
+        var maxBottom = 0;
+        for(var i=0;i<this.blocks.length;i++) {
+          var block = this.blocks[i];
+          var bound = block.getBound();
+          if(bound.left < minLeft) {
+            minLeft = bound.left;
+          }
+          if(bound.top < minTop) {
+            minTop = bound.top;
+          }
+          if((bound.left+bound.width) > maxRight) {
+            maxRight = bound.left+bound.width;
+          }
+          if((bound.top+bound.height) > maxBottom) {
+            maxBottom = bound.top+bound.height;
+          }
+        }
+        return {'width': (maxRight-minLeft) , 'height': (maxBottom-minTop), 'left':minLeft, 'top':minTop}
+      } else {
+        return null;
+      }
+      
+
+      
+    };
+
+    BlockGroup.prototype.snapshot = function(){
+      for(var i=0;i<this.blocks.length;i++){
+        var block = this.blocks[i];
+        block.snapshot();
+      }
+    };
+
+    BlockGroup.prototype.move = function(dx, dy){
+      for(var i=0;i<this.blocks.length;i++){
+        var block = this.blocks[i];
+        block.move(dx, dy);
+      }
+    };
+
+    BlockGroup.prototype.resize = function(x0, y0, w0, h0, x1, y1, w1, h1){
+      for(var i=0;i<this.blocks.length;i++){
+        var block = this.blocks[i];
+        var m0 = block.snap.left;
+        var n0 = block.snap.top;
+        var a0 = block.snap.width;
+        var b0 = block.snap.height;
+        var m1 = (w0*x1+w1*m0-w1*x0)/w0;
+        var n1 = (h0*y1+h1*n0-h1*y0)/h0;
+        var a1 = (a0*w1)/w0;
+        var b1 = (b0*h1)/h0;
+        
+        //需要和单元格对其，所以对结果再处理
+        var r1 = round_by_ten(m1);
+        var m1_new = r1[0];
+        var a1_new = round_by_ten(a1 + r1[1])[0];
+
+        var r2 = round_by_ten(n1);
+        var n1_new = r2[0];
+        var b1_new = round_by_ten(b1 + r2[1])[0];
+
+        // if(block.el.attr('id')=='b0'){
+        //   $("#log").html(m1+","+n1+"==="+m1_new+","+n1_new);
+        // }
+        
+        block.setPosition(m1_new, n1_new);
+        block.setSize(a1_new, b1_new);
+      }
+    };
+
+    var Block = function(domId, paper){
+      this.paper = paper;
+      this.el = $("#"+domId);
+      this.el.addClass("block");
+      this.contentEl = $('<div class="content"></div>');
+      this.el.append(this.contentEl);
+      var _this = this;
+      this.el.click(function(e){
+        _this.paper.selectedBlocks.clear();
+        _this.paper.selectedBlocks.addBlock(_this);
+        _this.paper.select();
+        //
+        for(var i=0;i<paper.blocks.length;i++){
+          var block = paper.blocks[i];
+          block.el.removeClass("ui-selected");
+        }
+        _this.el.addClass("ui-selected");
+        
+      });
+    };
+
+    Block.prototype.snapshot = function(){
+      this.snap = this.getBound();
+    }
+
+    Block.prototype.move = function(dx, dy) {
+      var left = this.snap.left + dx;
+      var top = this.snap.top + dy;
+      this.setPosition(left, top);
+    }
+
+    Block.prototype.getBound = function(){
+      var w = this.el.width();
+      var h = this.el.height();
+      var top = this.el.position().top;
+      var left = this.el.position().left;
+      return {width:w, height:h, left:left, top:top}
+    };
+
+    Block.prototype.setPosition = function(x, y){
+      this.el.css({
+        "left": x+"px",
+        "top": y+"px",
+      });
+    };
+
+    Block.prototype.setSize = function(width, height){
+      this.el.css({
+        "width": width+"px",
+        "height": height+"px"
+      });
+    };
+
+    var Rectangle = function(domId, paper) {
+      Block.apply(this, arguments);
+      this.el.addClass("rectangle");
+      this.el.addClass("bordered");
+    }
+
+    extend(Rectangle, Block);
+
+    var Placeholder = function(domId, paper) {
+      Rectangle.apply(this, arguments);
+      this.el.addClass("placeholder");
+      this.contentEl.append($('<img src="../img/placeholder.svg" alt="placeholder">'));
+    }
+
+    extend(Placeholder, Rectangle);
+
+    var Button = function(domId, paper) {
+      Block.apply(this, arguments);
+      this.el.addClass("button");
+      this.el.addClass("bordered");
+      this.labelEl = $('<span class="label">确定</span>');
+      this.contentEl.append(this.labelEl);
+    };
+
+    extend(Button, Block);
+
+    Button.prototype.setSize = function(width, height){
+      this.el.css({
+        "width": width+"px",
+        "height": height+"px",
+        "line-height": height+"px"
+      });
+    };
+
+    var SelectBox = function(domId){
+      this.el = $("#"+domId);
+
+      this.el.addClass("select-box");
+      this.el.html(
+        '<div class="ui-resizable-handle ui-resizable-n"></div>'+
+        '<div class="ui-resizable-handle ui-resizable-e"></div>'+
+        '<div class="ui-resizable-handle ui-resizable-s"></div>'+
+        '<div class="ui-resizable-handle ui-resizable-w"></div>'+
+        '<div class="ui-resizable-handle ui-resizable-ne"></div>'+
+        '<div class="ui-resizable-handle ui-resizable-se"></div>'+
+        '<div class="ui-resizable-handle ui-resizable-sw"></div>'+
+        '<div class="ui-resizable-handle ui-resizable-nw"></div>'
+      );
+
+      $(".ui-resizable-handle").css({
+        "background-color": "rgba(0,0,0,.75)",
+        "width": "8px",
+        "height": "8px"
+      });
+
+      
+      $(".ui-resizable-n").css({
+        "top": "-8px"
+      });
+      $(".ui-resizable-e").css({
+        "right": "-8px"
+      });
+      $(".ui-resizable-s").css({
+        "bottom": "-8px"
+      });
+      $(".ui-resizable-w").css({
+        "left": "-8px"
+      });
+      $(".ui-resizable-ne").css({
+        "top": "-8px",
+        "right": "-8px"
+      });
+      $(".ui-resizable-se").css({
+        "bottom": "-8px",
+        "right": "-8px"
+      });
+      $(".ui-resizable-sw").css({
+        "bottom": "-8px",
+        "left": "-8px"
+      });
+      $(".ui-resizable-nw").css({
+        "left": "-8px",
+        "top": "-8px"
+      });
+
+      this.setHandlesPosition = function(width, height){
+        $('.ui-resizable-n').css('left', (width/2-4)+'px');
+        $('.ui-resizable-e').css('top', (height/2-4)+'px');
+        $('.ui-resizable-s').css('left', (width/2-4)+'px');
+        $('.ui-resizable-w').css('top', (height/2-4)+'px');
+      };
+
+      var _this = this;
+
+      this.el.mouseover(function(){
+        _this.el.css("cursor", "move");
+      });
+
+      this.el.resizable({ 
+        handles: {
+          'n':'.ui-resizable-n', 
+          'e':'.ui-resizable-e',
+          's':'.ui-resizable-s',
+          'w':'.ui-resizable-w',
+          'ne': '.ui-resizable-ne',
+          'se': '.ui-resizable-se',
+          'sw': '.ui-resizable-sw',
+          'nw': '.ui-resizable-nw'
+        },
+        grid: [ 10, 10 ],
+        create: function( event, ui ) {
+          var width = $(event.target).width();
+          var height = $(event.target).height();
+          _this.setHandlesPosition(width, height);
+        },
+        resize: function(event, ui){
+          var $el = $(event.target);
+          var x1 = $el.position().left;
+          var y1 = $el.position().top;
+          var w1 = $el.width();
+          var h1 = $el.height();
+          _this.setHandlesPosition(w1, h1);
+          //
+          _this.target.resize(_this.x0, _this.y0, _this.w0, _this.h0, x1, y1, w1, h1);
+        },
+        start: function( event, ui ) {
+          var $el = $(event.target);
+          _this.x0 = $el.position().left;
+          _this.y0 = $el.position().top;
+          _this.w0 = $el.width();
+          _this.h0 = $el.height();
+        },
+        stop: function( event, ui ) {
+          _this.target.snapshot();
+        }
+
+      });
+
+      this.el.draggable({
+        cursor: "move",
+        grid: [ 10, 10 ],
+        drag: function( event, ui ) {
+
+          var left = ui.position.left;
+          var top = ui.position.top;
+          //
+          var dx = ui.position.left - _this.originalPosition.left;
+          var dy = ui.position.top - _this.originalPosition.top;
+          _this.target.move(dx, dy);
+        },
+        start: function( event, ui ) {
+          $t = $(event.target); 
+          _this.originalPosition = {left: $t.position().left, top: $t.position().top};
+        },
+        stop: function( event, ui ) {
+          _this.target.snapshot();
+        }
+      });
+    };
+
+    SelectBox.prototype.setPosition = function(left, top){
+      this.el.css({
+        'top': top+'px',
+        'left': left+'px'
+      });
+    };
+
+    SelectBox.prototype.setSize = function(width, height){
+      this.el.css({
+        'width': width+'px',
+        'height': height+'px',
+      });
+      this.setHandlesPosition(width, height);
+    };
+
+    SelectBox.prototype.hide = function(){
+      this.el.css({
+        'display': 'none'
+      });
+    };
+
+    SelectBox.prototype.show = function(){
+      this.el.css({
+        'display': 'block'
+      });
+    };
+
+    SelectBox.prototype.stickTo = function(target){
+      this.target = target;
+      //将目标的位置大小 赋给 selectbox
+      var bound = this.target.getBound();
+      if(bound!=null) {
+        this.setPosition(bound.left, bound.top);
+        this.setSize(bound.width, bound.height);
+        this.setHandlesPosition(bound.width, bound.height);
+        this.show();
+      }else{
+        this.hide();
+      }
+    };
+
+
+    paper = new Paper("container");
+
+    var rect = paper.addRectangle(100, 200, 200, 200);
+    var button = paper.addButton(500, 300, 100, 50);
+    var placeholder = paper.addPlaceholder(600, 100, 100, 50);
+
+    // paper.selectBlock(rect);
+    // paper.selectBlock(button);
+    // paper.selectBlock(button2);
+
+    
+    
+    //alert(bound.left+','+bound.top+','+bound.width+','+bound.height);
+  });
+  
+  </script>
+</head>
+<body>
+  <div id="container">
+    
+  </div>
+  <div id="log"></div>
+  <div id="log2"></div>
+</body>
+</html>

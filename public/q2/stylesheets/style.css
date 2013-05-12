@@ -1,0 +1,136 @@
+/* line 1, ../sass/style.scss */
+* {
+  margin: 0;
+  padding: 0;
+  border: 0;
+  font-size: 100%;
+  font: inherit;
+  vertical-align: baseline;
+}
+
+/* line 10, ../sass/style.scss */
+body {
+  background: #fff;
+  color: #555;
+  font-family: 'Helvetica Neue',Arial,Helvetica,sans-serif;
+  font-size: 15px;
+}
+
+/* line 17, ../sass/style.scss */
+.select-box {
+  position: absolute;
+  width: 20px;
+  height: 20px;
+  top: 0px;
+  left: 0px;
+  display: none;
+  background-color: rgba(66, 194, 217, 0.1);
+  border: 1px dashed rgba(0, 0, 0, 0.25);
+  z-index: 1000;
+}
+
+/* line 29, ../sass/style.scss */
+.select-box:hover {
+  cursor: move;
+}
+
+/* line 33, ../sass/style.scss */
+.paper {
+  background: url(http://pic.52mxp.com/site/tool/grid.png);
+  position: relative;
+  border: 1px solid #ccc;
+  overflow: hidden;
+}
+
+/* line 40, ../sass/style.scss */
+.paper .ui-selecting {
+  background-color: rgba(66, 194, 217, 0.3) !important;
+}
+
+/* line 44, ../sass/style.scss */
+.paper .ui-selected {
+  box-shadow: 0 0 5px #42c2d9;
+  cursor: move;
+}
+
+/* line 49, ../sass/style.scss */
+.border-solid {
+  background: url(../images/line-h.png) top repeat-x, url(../images/line-h.png) bottom repeat-x, url(../images/line-v.png) left repeat-y, url(../images/line-v.png) right repeat-y;
+}
+
+/* line 53, ../sass/style.scss */
+.border-dashed {
+  background: url(../images/line-h-dashed.png) top repeat-x, url(../images/line-h-dashed.png) bottom repeat-x, url(../images/line-v-dashed.png) left repeat-y, url(../images/line-v-dashed.png) right repeat-y;
+}
+
+/* line 57, ../sass/style.scss */
+.border-dotted {
+  background: url(../images/line-h-dotted.png) top repeat-x, url(../images/line-h-dotted.png) bottom repeat-x, url(../images/line-v-dotted.png) left repeat-y, url(../images/line-v-dotted.png) right repeat-y;
+}
+
+/* line 61, ../sass/style.scss */
+.block, .rectangle, .button, .placeholder {
+  position: absolute;
+}
+
+/* line 65, ../sass/style.scss */
+.block:hover, .rectangle:hover, .button:hover, .placeholder:hover {
+  box-shadow: 0 0 5px rgba(66, 194, 217, 0.5);
+}
+
+/* line 69, ../sass/style.scss */
+.block .content, .rectangle .content, .button .content, .placeholder .content {
+  width: 100%;
+  height: 100%;
+  overflow: hidden;
+}
+
+/* line 75, ../sass/style.scss */
+.block .content *, .rectangle .content *, .button .content *, .placeholder .content * {
+  line-height: 1.3em;
+}
+
+/* line 79, ../sass/style.scss */
+.rectangle, .button, .placeholder {
+  background-color: white;
+}
+
+/* line 84, ../sass/style.scss */
+.button {
+  font-size: 1em;
+  line-height: 1.2em;
+  color: inherit;
+  float: none;
+  box-shadow: 3px 3px 0 rgba(0, 0, 0, 0.5) !important;
+}
+
+/* line 94, ../sass/style.scss */
+.button .label {
+  position: absolute;
+  top: 50%;
+  width: 100%;
+  overflow: hidden;
+  margin-top: -0.60em;
+  font-size: 1em;
+  padding: 0;
+  background-color: transparent;
+  color: inherit;
+  float: none;
+  text-align: center;
+}
+
+/* line 108, ../sass/style.scss */
+.placeholder {
+  background-color: #f8f8f8;
+}
+
+/* line 113, ../sass/style.scss */
+.placeholder .content img {
+  width: 100%;
+  height: 100%;
+}
+
+/* line 118, ../sass/style.scss */
+.text .content {
+  word-wrap: break-word;
+}

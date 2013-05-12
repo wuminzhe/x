@@ -42,3 +42,11 @@ function round_by_ten(num) {
   var tmp = Math.round(num/10);
   return [tmp*10, num-tmp*10];
 }
+
+function isType(obj, className){
+  if(obj.constructor.toString().indexOf(className)!=-1){
+    return true;
+  }else{
+    return false
+  }
+}

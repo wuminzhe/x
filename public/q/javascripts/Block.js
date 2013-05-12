@@ -1,58 +1,75 @@
-var Block = function(domId, paper){
+function Block(paper, left, top, width, height){
   this.paper = paper;
-  this.el = $("#"+domId);
+  this.type = "Block";
+  this.left = left;
+  this.top = top;
+  this.width = width;
+  this.height = height;
+};
+
+Block.prototype.render = function(){
+  this.id = paper.getBlockId();
+  this.el = $('<div id="'+this.id+'" />');
   this.el.addClass("block");
-  this.el.css({
-    "left": "100px",
-    "top": "200px",
-    "width": "100px",
-    "height": "60px"
-  });
+  this.paper.el.append(this.el);
+
+  //content element
   this.contentEl = $('<div class="content"></div>');
   this.el.append(this.contentEl);
+
+  //bind event
   var _this = this;
   this.el.click(function(e){
-    _this.paper.selectedBlocks.clear();
-    _this.paper.selectedBlocks.addBlock(_this);
-    _this.paper.select();
-    //
-    for(var i=0;i<paper.blocks.length;i++){
-      var block = paper.blocks[i];
-      block.el.removeClass("ui-selected");
+    if(e.shiftKey){
+      _this.paper.selectBlock(_this);
+    }else{
+      _this.paper.selectOneBlockOnly(_this);
     }
-    _this.el.addClass("ui-selected");
-    
   });
+  
+  this.el.css({
+    "left": this.left+"px",
+    "top": this.top+"px",
+    "width": this.width+"px",
+    "height": this.height+"px"
+  });
+};
+
+Block.prototype.update = function() {
+  this.el.css({
+    "left": this.left+"px",
+    "top": this.top+"px",
+    "width": this.width+"px",
+    "height": this.height+"px"
+  });
+};
+
+Block.prototype.remove = function() {
+  this.el.remove();
 };
 
 Block.prototype.snapshot = function(){
-  this.snap = this.getBound();
-}
-
-Block.prototype.move = function(dx, dy) {
-  var left = this.snap.left + dx;
-  var top = this.snap.top + dy;
-  this.setPosition(left, top);
-}
-
-Block.prototype.getBound = function(){
-  var w = this.el.width();
-  var h = this.el.height();
-  var top = this.el.position().top;
-  var left = this.el.position().left;
-  return {width:w, height:h, left:left, top:top}
+  return ( this.snap = this.getBound() );
 };
 
-Block.prototype.setPosition = function(x, y){
-  this.el.css({
-    "left": x+"px",
-    "top": y+"px",
-  });
+Block.prototype.moveFromSnapshot = function( dx, dy ) {
+  this.setPosition( this.snap.left+dx, this.snap.top+dy );
 };
 
-Block.prototype.setSize = function(width, height){
-  this.el.css({
-    "width": width+"px",
-    "height": height+"px"
-  });
+Block.prototype.move = function( dx, dy ) {
+  this.setPosition( this.left+dx, this.top+dy );
+};
+
+Block.prototype.getBound = function() {
+  return { width:this.width, height:this.height, left:this.left, top:this.top }
+};
+
+Block.prototype.setPosition = function( left, top ) {
+  this.left = left;
+  this.top = top;
+};
+
+Block.prototype.setSize = function( width, height ) {
+  this.width = width;
+  this.height = height;
 };

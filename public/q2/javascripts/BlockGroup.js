@@ -14,13 +14,6 @@ BlockGroup.prototype.clear = function() {
   this.blocks = [];
 };
 
-BlockGroup.prototype.update = function() {
-  for(var i=0;i<this.blocks.length;i++) {
-    var block = this.blocks[i];
-    block.update();
-  }
-};
-
 BlockGroup.prototype.contains = function(block) {
   _.indexOf(this.blocks, block);
 };
