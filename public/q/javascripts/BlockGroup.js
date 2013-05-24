@@ -77,7 +77,7 @@ BlockGroup.prototype.move = function(dx, dy){
   }
 };
 
-BlockGroup.prototype.resize = function(x0, y0, w0, h0, x1, y1, w1, h1) {
+BlockGroup.prototype.resize = function( x0, y0, w0, h0, x1, y1, w1, h1 ) {
   for(var i=0;i<this.blocks.length;i++){
     var block = this.blocks[i];
     var m0 = block.snap.left;

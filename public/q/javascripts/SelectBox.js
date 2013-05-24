@@ -119,7 +119,19 @@ function SelectBox(domId){
   });
 };
 
-SelectBox.prototype.move = function(dx, dy){
+SelectBox.prototype.showHandles = function() {
+  var handles = [ 'n', 'e', 's', 'w', 'ne', 'se', 'sw', 'nw' ];
+  for( var i=0; i<handles.length; i++ ) {
+    var handle = handles[i];
+    if( _.indexOf( this.target.disabledHandles, handle )!=-1 ) { //包含在不要显示的里面
+      $('.ui-resizable-'+handle).css('display', 'none');
+    } else {
+      $('.ui-resizable-'+handle).css('display', 'block');
+    }
+  }
+};
+
+SelectBox.prototype.move = function( dx, dy ) {
   var p = this.el.position();
   this.el.css({
     'top': (p.top+dy)+'px',
@@ -127,14 +139,14 @@ SelectBox.prototype.move = function(dx, dy){
   });
 };
 
-SelectBox.prototype.setPosition = function(left, top){
+SelectBox.prototype.setPosition = function( left, top ){
   this.el.css({
     'top': top+'px',
     'left': left+'px'
   });
 };
 
-SelectBox.prototype.setSize = function(width, height){
+SelectBox.prototype.setSize = function( width, height ){
   this.el.css({
     'width': width+'px',
     'height': height+'px',
@@ -152,14 +164,15 @@ SelectBox.prototype.show = function(){
   this.el.css({
     'display': 'block'
   });
+  this.showHandles();
 };
 
-SelectBox.prototype.stickTo = function(target){
+SelectBox.prototype.stickTo = function( target ){
   this.target = target;
-  //将目标的位置大小 赋给 selectbox
-  var bound = this.target.getBound();
   
-  if(bound!=null) {
+  if(this.target) {
+    //将目标的位置大小 赋给 selectbox
+    var bound = this.target.getBound();
     this.setPosition(bound.left, bound.top);
     this.setSize(bound.width, bound.height);
     this.setHandlesPosition(bound.width, bound.height);

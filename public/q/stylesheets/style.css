@@ -69,24 +69,24 @@ body {
 }
 
 /* line 61, ../sass/style.scss */
-.block, .rectangle, .button, .placeholder {
+.block, .rectangle, .button, .placeholder, .line, .menu {
   position: absolute;
 }
 
 /* line 65, ../sass/style.scss */
-.block:hover, .rectangle:hover, .button:hover, .placeholder:hover {
+.block:hover, .rectangle:hover, .button:hover, .placeholder:hover, .line:hover, .menu:hover {
   box-shadow: 0 0 5px rgba(66, 194, 217, 0.5);
 }
 
 /* line 69, ../sass/style.scss */
-.block .content, .rectangle .content, .button .content, .placeholder .content {
+.block .content, .rectangle .content, .button .content, .placeholder .content, .line .content, .menu .content {
   width: 100%;
   height: 100%;
   overflow: hidden;
 }
 
 /* line 75, ../sass/style.scss */
-.block .content *, .rectangle .content *, .button .content *, .placeholder .content * {
+.block .content *, .rectangle .content *, .button .content *, .placeholder .content *, .line .content *, .menu .content * {
   line-height: 1.3em;
 }
 
@@ -133,4 +133,40 @@ body {
 /* line 118, ../sass/style.scss */
 .text .content {
   word-wrap: break-word;
+}
+
+/* line 126, ../sass/style.scss */
+.line .line-horizontal {
+  position: absolute;
+  width: 100%;
+  height: 2px;
+  top: 9px;
+  background: url(../images/line-h.png) center repeat-x;
+}
+
+/* line 134, ../sass/style.scss */
+.line .line-vertical {
+  position: absolute;
+  height: 100%;
+  width: 2px;
+  left: 9px;
+  background: url(../images/line-v.png) center repeat-y;
+}
+
+/* line 142, ../sass/style.scss */
+.menu {
+  background-color: white;
+}
+
+/* line 147, ../sass/style.scss */
+.menu .menu-vertical {
+  margin: 0;
+}
+
+/* line 151, ../sass/style.scss */
+.menu .menu-vertical li {
+  list-style: none;
+  margin: 0;
+  padding: .5em;
+  background: url(../images/line-h.png) bottom repeat-x;
 }

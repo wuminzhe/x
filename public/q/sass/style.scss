@@ -118,3 +118,39 @@ body {
 .text .content {
   word-wrap: break-word;
 }
+
+.line {
+  @extend .block;
+}
+
+.line .line-horizontal{
+  position: absolute;
+  width: 100%;
+  height: 2px;
+  top: 9px;
+  background: url(../images/line-h.png) center repeat-x;
+}
+
+.line .line-vertical{
+  position: absolute;
+  height: 100%;
+  width: 2px;
+  left: 9px;
+  background: url(../images/line-v.png) center repeat-y;
+}
+
+.menu {
+  @extend .block;
+  background-color: white;
+}
+
+.menu .menu-vertical {
+  margin: 0;
+}
+
+.menu .menu-vertical li {
+  list-style: none;
+  margin: 0;
+  padding: .5em;
+  background: url(../images/line-h.png) bottom repeat-x;
+}

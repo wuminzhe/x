@@ -86,6 +86,7 @@ function Paper(domId){
 
   //
   this.last_block_id = 0;
+  this.level = 0;
   //
   this.blocks = [];
   this.selectedBlocks = new BlockGroup();
@@ -96,7 +97,13 @@ function Paper(domId){
 };
 
 Paper.prototype._stick = function(){
-  this.selectBox.stickTo(this.selectedBlocks);
+  if( this.selectedBlocks.blocks.length==0 ) {
+    this.selectBox.stickTo(null);
+  } else if( this.selectedBlocks.blocks.length==1 ) {
+    this.selectBox.stickTo(this.selectedBlocks.blocks[0]);
+  } else if(this.selectedBlocks.blocks.length>1) {
+    this.selectBox.stickTo(this.selectedBlocks);
+  }
 };
 
 
@@ -202,12 +209,130 @@ Paper.prototype.getBlockId = function() {
   return "b_"+this.last_block_id++;
 };
 
+Paper.prototype.getLevel = function() {
+  return this.level++;
+};
+
+Paper.prototype.levelTop = function() {
+  if( this.selectedBlocks.blocks.length>0 ) {
+    //按照level排序
+    this.blocks.sort(function(a, b){
+      return a.level-b.level;
+    });
+    
+    //找出被选元素在整体中的位置
+    var indexes = [];
+    for( var i=0; i<this.selectedBlocks.blocks.length; i++ ){
+      var block = this.selectedBlocks.blocks[i];
+      indexes.push(_.indexOf(this.blocks, block));
+      
+    }
+    console.log(indexes);
+    
+    //数组重排
+    this.blocks = ceil(this.blocks, indexes);
+    
+    //然后将level设置成位置同样的值
+    for( var i=0; i<this.blocks.length; i++ ) {
+      var block = this.blocks[i];
+      block.level = i;
+      block.update();
+    }
+  }
+};
+
+Paper.prototype.levelBottom = function() {
+  if( this.selectedBlocks.blocks.length>0 ) {
+    //按照level排序
+    this.blocks.sort(function(a, b){
+      return b.level-a.level;
+    });
+    
+    //找出被选元素在整体中的位置
+    var indexes = [];
+    for( var i=0; i<this.selectedBlocks.blocks.length; i++ ){
+      var block = this.selectedBlocks.blocks[i];
+      indexes.push(_.indexOf(this.blocks, block)); 
+    }
+    
+    //数组重排
+    this.blocks = ceil(this.blocks, indexes);
+    
+    //然后将level设置成位置同样的值
+    var length = this.blocks.length;
+    for( var i=0; i<this.blocks.length; i++ ) {
+      var block = this.blocks[i];
+      block.level = length-i-1;
+      block.update();
+    }
+  }
+};
+
+Paper.prototype.levelUp = function() {
+  if( this.selectedBlocks.blocks.length>0 ) {
+    this.blocks.sort(function(a, b){
+      return a.level-b.level;
+    });
+    
+    //找出被选元素在整体中的位置
+    var indexes = [];
+    for( var i=0; i<this.selectedBlocks.blocks.length; i++ ){
+      var block = this.selectedBlocks.blocks[i];
+      indexes.push(_.indexOf(this.blocks, block));
+    }
+    
+    //数组重排
+    this.blocks = up(this.blocks, indexes);
+    
+    //然后将level设置成位置同样的值
+    for( var i=0; i<this.blocks.length; i++ ) {
+      var block = this.blocks[i];
+      block.level = i;
+      block.update();
+    }
+  }
+};
+
+//就是把元素倒过来，再up
+Paper.prototype.levelDown = function() {
+  if( this.selectedBlocks.blocks.length>0 ) {
+    this.blocks.sort(function(a, b){
+      return b.level-a.level;
+    });
+  
+    var indexes = [];
+    for( var i=0; i<this.selectedBlocks.blocks.length; i++ ){
+      var block = this.selectedBlocks.blocks[i];
+      indexes.push(_.indexOf(this.blocks, block));
+    }
+  
+    this.blocks = up(this.blocks, indexes);
+    var length = this.blocks.length;
+    for( var i=0; i<length; i++ ) {
+      var block = this.blocks[i];
+      block.level = length-i-1;
+      block.update();
+    }
+  }
+};
+
 //
 Paper.prototype.addBlock = function(className, x, y, width, height){
   var block = eval("new "+className+"(this, x, y, width, height)");
   block.render();
   this.blocks.push(block);
   return block;
+};
+
+Paper.prototype.addLine = function(x, y){
+  var line = new Line(this, x, y);
+  line.render();
+  this.blocks.push(line);
+  return line;
+};
+
+Paper.prototype.addMenu = function(x, y, width, height){
+  return this.addBlock("Menu", x, y, width, height);
 };
 
 Paper.prototype.addRectangle = function(x, y, width, height){

@@ -1,0 +1,43 @@
+<html>
+	<head>
+		<script type="text/javascript" src="./javascripts/libs/dragSlider.js"></script>
+		<style>
+			.slider {
+			  overflow: hidden;
+			  visibility: hidden;
+			  position: relative;
+			}
+			.slider-wrap {
+			  overflow: hidden;
+			  position: relative;
+			}
+			.slider-wrap > div {
+			  float:left;
+			  width:100%;
+			  position: relative;
+			}
+		</style>
+	</head>
+
+	<body>
+		<div id='slider' class='slider'>
+		    <div class='slider-wrap'>
+		      <div><img src="./images/1.png"></div>
+		      <div><img src="./images/2.png"></div>
+		      <div><img src="./images/3.png"></div>
+		    </div>
+		</div>
+
+		<script>
+			var slider =
+		                DragSlide(document.getElementById('slider'), {
+		                    auto: 5000,
+		                    continuous: true,
+		                    callback: function(pos) {
+		                    	//yeyeyeyeyey
+		                    }
+		                });
+		</script>
+
+	</body>
+</html>
